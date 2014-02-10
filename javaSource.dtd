@@ -1,0 +1,14 @@
+<!ELEMENT source (sourceName, jclass)>
+<!ELEMENT sourceName (#PCDATA)>
+<!ELEMENT jclass (className, visibility, innerclasses, methods)>
+<!ELEMENT className (#PCDATA)>
+<!ELEMENT visibility (#PCDATA)>
+<!ELEMENT innerclasses (jclass*)>
+<!ELEMENT methods (static, nonstatic)>
+<!ELEMENT static (method*)>
+<!ELEMENT nonstatic (method*)>
+<!ELEMENT method (name, visibility, params)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT params (param*)>
+<!ELEMENT param (paramType)>
+<!ELEMENT paramType (#PCDATA)>

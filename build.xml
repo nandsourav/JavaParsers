@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<!--CS639 pa2 build file
+    Note: This build.xml is not useful for building an eclipse Web project.
+    Instead, use it as guide to what has to be added to Web project
+    built from this file tree as in a "non-default" location 
+    We make a *portable* build.xml by setting up the platform-dependent
+    locations in environment variables and accessing them from here.
+    See $cs639/tomcat.csh for UNIX setenv's, use control panel for PC.
+    This build file assumes assumes there is a src tree of
+    sources and a WebContent/WEB-INF/web.xml file already there.
+    We use the ant project name (here servlet1) as the webapp name.
+-->
+<project name="pa2" default="build" basedir=".">
+   <!--grab onto environment variables as follows -->
+   <property environment="env"/>
+   <property name="CATALINA_HOME" value="${env.CATALINA_HOME}"/>
+   <property name="TOMCAT_URL" value="${env.TOMCAT_URL}"/>
+   <property name="DEPLOY_DIR" value="${CATALINA_HOME}/webapps/${ant.project.name}"/>
+    <path id="project.classpath">
+        <pathelement location="WebContent/WEB-INF/classes"/>
+        <pathelement location="${CATALINA_HOME}/lib/servlet-api.jar"/>
+    </path>
+	
+    <target name="init">
+        <mkdir dir="WebContent/WEB-INF/classes"/>
+    </target>
+    <target name="clean">
+        <delete dir="WebContent/WEB-INF/classes"/>
+    </target>
+    <target name="build" depends="init">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac destdir="WebContent/WEB-INF/classes" debug="on">
+            <src path="src"/>
+            <src path="input/classes"/>
+            <classpath refid="project.classpath"/>
+        </javac>
+    </target>
+
+    <!-- It's hard to run browsers under scripts, but wget does the job-->
+    <!-- wget is installed on UMB UNIX systems, and is available for PCs-->
+    <target name="test1a">
+        <echo message="running wget"/>
+        <exec executable="wget"> 
+          <arg line="${TOMCAT_URL}/${ant.project.name}/Box.xml"/>
+        </exec>
+    </target>
+	<target name="test1b">
+	    <echo message="running wget"/>
+	        <exec executable="wget"> 
+	        <arg line="${TOMCAT_URL}/${ant.project.name}/examples.sort.SortEx.xml"/>
+	    </exec>
+	</target>	    
+    <target name="test2a">
+        <echo message="Running counter for Grid"/>
+        <java fork="yes" classname="cs639.validation.Counter" failonerror="true" dir="${basedir}">
+        	<classpath refid="project.classpath" />
+        	<arg value="-s"/>
+        	<arg value="-v"/>
+        	<arg value="-schema"/>
+			<arg value="${TOMCAT_URL}/${ant.project.name}/javaSource.xsd"/>
+        	<arg value="${TOMCAT_URL}/${ant.project.name}/Grid.xml"/>
+        </java>
+    </target>
+    <target name="test2b">
+        <echo message="Running counter for SortEx"/>
+        <java fork="yes" classname="cs639.validation.Counter" failonerror="true" dir="${basedir}">
+        	<classpath refid="project.classpath" />
+        	<arg value="-s"/>
+        	<arg value="-v"/>
+        	<arg value="-schema"/>
+			<arg value="${TOMCAT_URL}/${ant.project.name}/javaSource.xsd"/>
+        	<arg value="${TOMCAT_URL}/${ant.project.name}/examples.sort.SortEx.xml"/>
+        </java>
+    </target>
+    <target name="test3a">
+        <echo message="Test for retrieving Grid methods by xpath"/>
+        <java fork="yes" classname="cs639.presentation.JSourceClient1" failonerror="true" dir="${basedir}">
+        	<classpath refid="project.classpath" />
+        	<arg value="${TOMCAT_URL}/${ant.project.name}/Grid.xml"/>
+        	<arg value="Grid"/>
+        </java>
+    </target>
+    <target name="test3b">
+        <echo message="Test for retrieving SortEx methods by xpath"/>
+        <java fork="yes" classname="cs639.presentation.JSourceClient1" failonerror="true" dir="${basedir}">
+        	<classpath refid="project.classpath" />
+        	<arg value="${TOMCAT_URL}/${ant.project.name}/examples.sort.SortEx.xml"/>
+        	<arg value="SortEx"/>
+        </java>
+    </target>
+    <target name="test4a">
+        <echo message="Test for retrieving Grid methods by SAX"/>
+        <java fork="yes" classname="cs639.presentation.JSourceClient2" failonerror="true" dir="${basedir}">
+        	<classpath refid="project.classpath" />
+        	<arg value="${TOMCAT_URL}/${ant.project.name}/Grid.xml"/>
+        	<arg value="Grid"/>
+        </java>
+    </target> 
+    <target name="test4b">
+        <echo message="Test for retrieving SortEx methods by SAX"/>
+        <java fork="yes" classname="cs639.presentation.JSourceClient2" failonerror="true" dir="${basedir}">
+        	<classpath refid="project.classpath" />
+        	<arg value="${TOMCAT_URL}/${ant.project.name}/examples.sort.SortEx.xml"/>
+        	<arg value="SortEx"/>
+        </java>
+    </target> 
+    <target name="test5">
+	    <echo message="running wget to get welcome.html"/>
+	        <exec executable="wget"> 
+	        <arg line="${TOMCAT_URL}/${ant.project.name}/Welcome.html"/>
+	    </exec>
+	</target>
+    <!-- simple deployment: copy WebContent file tree to webapps area -->
+    <!-- also, clean up first -->
+    <target name="deploy" depends="build">
+        <delete dir="${DEPLOY_DIR}"/>
+        <copy todir="${DEPLOY_DIR}"> 
+            <fileset dir="WebContent"/>
+        </copy>
+    </target>
+</project>

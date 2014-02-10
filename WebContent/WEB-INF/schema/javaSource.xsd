@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+			xmlns = "http://schemas.cs.umb.edu/jsource/"
+            targetNamespace="http://schemas.cs.umb.edu/jsource/" elementFormDefault="qualified" >
+   	<xsd:element name="source">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="sourceName" type="xsd:string"/>
+				<xsd:element name="jclass" type="jclassType"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="jclassType">
+		<xsd:sequence>
+			<xsd:element name="className" type="xsd:string"/>
+			<xsd:element name="visibility" type="xsd:string"/>
+			<xsd:element name="innerclasses" type="innerClassesType"/>
+			<xsd:element name="methods" type="methodsType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="innerClassesType">
+		<xsd:sequence>
+			<xsd:element name="jclass" type="jclassType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+		
+	<xsd:complexType name="methodsType">
+		<xsd:sequence>
+			<xsd:element name="static" type="methodGroupType"/>
+			<xsd:element name="nonstatic" type="methodGroupType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="methodGroupType">
+		<xsd:sequence>
+			<xsd:element name="method" type="methodType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>	
+	<xsd:complexType name="methodType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="visibility" type="xsd:string"/>
+			<xsd:element name="params" type="paramsType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="paramsType">
+		<xsd:sequence>
+			<xsd:element name="param" type="paramType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="paramType">
+		<xsd:sequence>
+			<xsd:element name="paramType" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>
+
+
